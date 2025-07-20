@@ -1,21 +1,35 @@
-import React, { useState } from 'react';
-import './AdminLogin.css';
-import { Eye, EyeOff, LogIn } from 'lucide-react';
+import React, { useState } from 'react'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
+import './AdminLogin.css'
+import { Eye, EyeOff, LogIn } from 'lucide-react'
+import { toast ,ToastContainer} from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
 
 const AdminLogin = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const navigate = useNavigate()
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Email:', email);
-    console.log('Password:', password);
-    alert('Sign-in functionality not implemented in this demo.');
-  };
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    try {
+      const res = await axios.post('http://localhost:8180/api/login', { email, password })
+      toast.success(res.data.message)
+      if (res.status === 200) {
+        setTimeout(() => {
+          navigate('/admin-panel')
+        }, 1000)
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Login failed')
+    }
+  }
 
   return (
     <div className="admin-signin-container">
+      <ToastContainer position="top-center" autoClose={1000}  />
       <div className="admin-header">
         <div className="admin-logo">
           <LogIn size={24} />
@@ -34,7 +48,7 @@ const AdminLogin = () => {
               id="email"
               placeholder="admin@example.com"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={e => setEmail(e.target.value)}
               required
             />
           </div>
@@ -47,7 +61,7 @@ const AdminLogin = () => {
                 id="password"
                 placeholder="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={e => setPassword(e.target.value)}
                 required
               />
               <span className="password-toggle" onClick={() => setShowPassword(!showPassword)}>
@@ -56,9 +70,7 @@ const AdminLogin = () => {
             </div>
           </div>
 
-          <button type="submit" className="sign-in-button">
-            Sign In
-          </button>
+          <button type="submit" className="sign-in-button">Sign In</button>
         </form>
 
         <div className="demo-credentials-box">
@@ -70,7 +82,7 @@ const AdminLogin = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default AdminLogin;
+export default AdminLogin

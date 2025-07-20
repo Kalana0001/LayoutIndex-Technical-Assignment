@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Trash2, Pencil, Plus, Search, Filter } from 'lucide-react';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './ProductPage.css';
 
 const ProductPage = ({ setActiveTab, setProductToEdit }) => {
@@ -11,20 +13,22 @@ const ProductPage = ({ setActiveTab, setProductToEdit }) => {
   const [filterStatus, setFilterStatus] = useState('All Status');
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get('http://localhost:8180/api/products');
-        setProducts(response.data);
-      } catch (err) {
-        setError('Failed to load products');
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchProducts();
   }, []);
+
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get('http://localhost:8180/api/products');
+      setProducts(response.data);
+      setError(null);
+    } catch (err) {
+      setError('Failed to load products');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const filteredProducts = products.filter(product => {
     const matchesSearch =
@@ -51,11 +55,26 @@ const ProductPage = ({ setActiveTab, setProductToEdit }) => {
     }
   };
 
+  const handleDelete = async (productId, productName) => {
+    if (!window.confirm(`Are you sure you want to delete "${productName}"?`)) return;
+
+    try {
+      await axios.delete(`http://localhost:8180/api/product/${productId}`);
+      toast.success(`Deleted product "${productName}"`);
+      // Remove deleted product from state to update UI
+      setProducts(prev => prev.filter(p => p.id !== productId));
+    } catch (err) {
+      toast.error('Failed to delete product.');
+      console.error(err);
+    }
+  };
+
   if (loading) return <div className="loading">Loading products...</div>;
   if (error) return <div className="error">{error}</div>;
 
   return (
     <div className="product-dashboard-container">
+      <ToastContainer position="top-center" autoClose={2000} />
       <div className="product-dashboard-header">
         <div className="product-header-left">
           <h1>Products</h1>
@@ -104,6 +123,7 @@ const ProductPage = ({ setActiveTab, setProductToEdit }) => {
               key={product.id}
               product={product}
               onEdit={() => handleEdit(product.id)}
+              onDelete={() => handleDelete(product.id, product.name)}
             />
           ))
         )}
@@ -112,12 +132,8 @@ const ProductPage = ({ setActiveTab, setProductToEdit }) => {
   );
 };
 
-const ProductCard = ({ product, onEdit }) => {
+const ProductCard = ({ product, onEdit, onDelete }) => {
   const { image_url, name, description, price, quantity, categories, status } = product;
-
-  const handleDelete = () => {
-    alert(`Delete clicked for: ${name}`);
-  };
 
   return (
     <div className="product-card">
@@ -137,7 +153,7 @@ const ProductCard = ({ product, onEdit }) => {
           <button className="hover-icon-button" onClick={onEdit}>
             <Pencil size={18} />
           </button>
-          <button className="hover-icon-button" onClick={handleDelete}>
+          <button className="hover-icon-button" onClick={onDelete}>
             <Trash2 size={18} />
           </button>
         </div>

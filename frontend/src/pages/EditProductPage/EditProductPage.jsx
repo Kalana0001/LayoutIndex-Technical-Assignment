@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, FolderOpen, UploadCloud } from 'lucide-react';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const EditProductPage = ({ productToEdit, setActiveTab }) => {
   const [productName, setProductName] = useState('');
@@ -47,6 +49,7 @@ const EditProductPage = ({ productToEdit, setActiveTab }) => {
       })
       .catch((err) => {
         console.error('Failed to load categories', err);
+        toast.error('Failed to load categories.');
       });
   }, [productToEdit]);
 
@@ -81,12 +84,12 @@ const EditProductPage = ({ productToEdit, setActiveTab }) => {
       .map((c) => c.id);
 
     if (!productName || !description || !price || !quantity || !status) {
-      alert('Please fill in all required fields.');
+      toast.error('Please fill in all required fields.');
       return;
     }
 
     if (selectedCategoryIds.length === 0) {
-      alert('Please select at least one category.');
+      toast.error('Please select at least one category.');
       return;
     }
 
@@ -113,20 +116,24 @@ const EditProductPage = ({ productToEdit, setActiveTab }) => {
       setLoading(false);
 
       if (res.ok) {
-        alert('✅ Product updated successfully!');
-        setActiveTab('Products');
+        toast.success('Product updated successfully!');
+        setTimeout(() => {
+          setActiveTab('Products');
+        }, 1500);
       } else {
-        alert(`❌ Failed: ${data.error || 'Unknown error'}`);
+        toast.error(`Failed: ${data.error || 'Unknown error'}`);
       }
     } catch (err) {
       setLoading(false);
-      alert('❌ Failed to submit product. Please try again.');
       console.error(err);
+      toast.error('Failed to submit product. Please try again.');
     }
   };
 
   return (
     <div className="addproduct-container">
+      <ToastContainer position="top-center" autoClose={1000} />
+      
       <div className="addproduct-header">
         <button className="addproduct-back-button" onClick={() => setActiveTab('Products')}>
           <ArrowLeft className="addproduct-back-arrow-svg" />

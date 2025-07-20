@@ -61,7 +61,7 @@ router.post('/product', upload.array('images'), (req, res) => {
         return res.status(500).json({ error: 'Error linking categories' });
       }
 
-      res.json({ message: '✅ Product created successfully' });
+      res.json({ message: 'Product created successfully' });
     });
   });
 });
@@ -202,11 +202,29 @@ router.put('/product/:id', upload.array('images'), (req, res) => {
           return res.status(500).json({ error: 'Error linking categories' });
         }
 
-        res.json({ message: '✅ Product updated successfully' });
+        res.json({ message: 'Product updated successfully' });
       });
     });
   });
 });
+
+// API: Delete Product
+router.delete('/product/:id', (req, res) => {
+  const productId = req.params.id;
+
+  const deleteQuery = 'DELETE FROM products WHERE id = ?';
+
+  db.query(deleteQuery, [productId], (err, result) => {
+    if (err) {
+      console.error('Error deleting product:', err);
+      return res.status(500).json({ error: 'Failed to delete product' });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+    return res.json({ message: 'Product deleted successfully' });
+  });
+})
 
 
 module.exports = router;

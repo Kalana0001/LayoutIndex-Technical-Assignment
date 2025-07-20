@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import axios from 'axios';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './AddCategoryModal.css';
 
 const AddCategoryModal = ({ visible, onClose }) => {
@@ -11,7 +13,7 @@ const AddCategoryModal = ({ visible, onClose }) => {
 
   const handleAdd = async () => {
     if (!categoryName.trim()) {
-      alert('Please enter a category name');
+      toast.warn('Please enter a category name');
       return;
     }
 
@@ -20,12 +22,12 @@ const AddCategoryModal = ({ visible, onClose }) => {
       const response = await axios.post('http://localhost:8180/api/categories', {
         name: categoryName.trim(),
       });
-      alert(response.data.message);
+      toast.success(response.data.message || 'Category added successfully');
       setCategoryName('');
       onClose();
     } catch (error) {
       console.error('Failed to add category:', error);
-      alert('Failed to add category');
+      toast.error(error.response?.data?.message || 'Failed to add category');
     } finally {
       setLoading(false);
     }

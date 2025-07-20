@@ -1,6 +1,13 @@
 CREATE DATABASE IF NOT EXISTS ecommerce;
 USE ecommerce;
 
+CREATE TABLE admins (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100),
+  email VARCHAR(255) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL
+);
+
 CREATE TABLE categories (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
@@ -16,7 +23,7 @@ CREATE TABLE products (
   price DECIMAL(10,2) NOT NULL,
   quantity INT NOT NULL DEFAULT 0,
   status VARCHAR(20) NOT NULL DEFAULT 'Active',
-  image VARCHAR(255),
+  image_url VARCHAR(255),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -28,6 +35,7 @@ CREATE TABLE product_categories (
   FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
 );
 
+select * from admins;
 select * from categories;
 select * from products;
 select * from product_categories;

@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './CategoriesPage.css';
-import {
-  PlusSquare,
-  ChevronRight,
-  Edit,
-  Trash2,
-} from 'lucide-react';
+import { PlusSquare, ChevronRight, Edit, Trash2 } from 'lucide-react';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import AddCategoryModal from '../../components/Common/AddCategoryModal/AddCategoryModal';
 import AddSubCategoryModal from '../../components/Common/AddSubCategoryModal/AddSubCategoryModal';
 import EditCategoryModal from '../../components/Common/EditCategoryModal/EditCategoryModal';
@@ -37,7 +35,7 @@ const CategoriesPage = () => {
       setCategories(categoriesWithExpand);
     } catch (error) {
       console.error('Failed to fetch categories:', error);
-      alert('Failed to load categories');
+      toast.error('Failed to load categories');
     }
   };
 
@@ -58,11 +56,11 @@ const CategoriesPage = () => {
   const handleEditSave = async (newName) => {
     try {
       await axios.put(`http://localhost:8180/api/categories/${editingCategoryId}`, { name: newName });
-      alert(`Category updated to "${newName}"!`);
+      toast.success(`Category updated to "${newName}"!`);
       setShowEditModal(false);
       fetchCategories();
     } catch (error) {
-      alert('Failed to update category');
+      toast.error('Failed to update category');
       console.error(error);
     }
   };
@@ -72,11 +70,11 @@ const CategoriesPage = () => {
 
     try {
       await axios.delete(`http://localhost:8180/api/categories/${id}`);
-      alert(`Category "${name}" deleted!`);
-      fetchCategories(); 
+      toast.success(`Category "${name}" deleted!`);
+      fetchCategories();
     } catch (error) {
       console.error('Failed to delete category:', error);
-      alert('Failed to delete category');
+      toast.error('Failed to delete category');
     }
   };
 
@@ -93,17 +91,17 @@ const CategoriesPage = () => {
   const submitNewCategory = async () => {
     const name = newCategoryName.trim();
     if (!name) {
-      alert('Category name cannot be empty');
+      toast.warn('Category name cannot be empty');
       return;
     }
     try {
       await axios.post('http://localhost:8180/api/categories', { name, parent_id: null });
-      alert(`Category "${name}" added!`);
+      toast.success(`Category "${name}" added!`);
       setNewCategoryName('');
       setShowAddCategoryModal(false);
       fetchCategories();
     } catch {
-      alert('Failed to add category');
+      toast.error('Failed to add category');
     }
   };
 
@@ -113,19 +111,20 @@ const CategoriesPage = () => {
 
     try {
       await axios.post('http://localhost:8180/api/categories', { name, parent_id: currentParentId });
-      alert(`Subcategory "${name}" added to "${currentParentName}"!`);
+      toast.success(`Subcategory "${name}" added to "${currentParentName}"!`);
       setNewSubCategoryName('');
       setCurrentParentId(null);
       setCurrentParentName('');
       setShowAddSubCategoryModal(false);
       fetchCategories();
     } catch {
-      alert('Failed to add subcategory');
+      toast.error('Failed to add subcategory');
     }
   };
 
   return (
     <div className="categories-container">
+      <ToastContainer position="top-center" autoClose={1000}  />
       <div className="categories-header">
         <div className="header-left">
           <p>Organize your products into categories and subcategories</p>

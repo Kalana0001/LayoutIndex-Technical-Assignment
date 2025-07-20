@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './AddNewProductPage.css';
 import { ArrowLeft, UploadCloud, FolderKanban } from 'lucide-react';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AddNewProductPage = ({ setActiveTab }) => {
   const [productName, setProductName] = useState('');
@@ -38,6 +40,7 @@ const AddNewProductPage = ({ setActiveTab }) => {
       })
       .catch((err) => {
         console.error('Failed to load categories', err);
+        toast.error('Failed to load categories');
       });
   }, []);
 
@@ -62,12 +65,12 @@ const AddNewProductPage = ({ setActiveTab }) => {
       .map((c) => c.id);
 
     if (!productName || !description || !price || !quantity || !status) {
-      alert('Please fill in all required fields.');
+      toast.warn('Please fill in all required fields.');
       return;
     }
 
     if (selectedCategoryIds.length === 0) {
-      alert('Please select at least one category.');
+      toast.warn('Please select at least one category.');
       return;
     }
 
@@ -94,22 +97,26 @@ const AddNewProductPage = ({ setActiveTab }) => {
       setLoading(false);
 
       if (res.ok) {
-        alert('✅ Product created successfully!');
-        setActiveTab('Products');
+        toast.success('Product created successfully!');
+        setTimeout(() => setActiveTab('Products'), 1500);
       } else {
-        alert(`Failed: ${data.error || 'Unknown error'}`);
+        toast.error(`Failed: ${data.error || 'Unknown error'}`);
       }
     } catch (err) {
       setLoading(false);
-      alert('Failed to submit product. Please try again.');
+      toast.error('Failed to submit product. Please try again.');
       console.error(err);
     }
   };
 
   return (
     <div className="addproduct-container">
+      <ToastContainer position="top-center" autoClose={1000} />
       <div className="addproduct-header">
-        <button className="addproduct-back-button" onClick={() => setActiveTab("Products")}>
+        <button
+          className="addproduct-back-button"
+          onClick={() => setActiveTab('Products')}
+        >
           <ArrowLeft className="addproduct-back-arrow-svg" size={20} />
           Back
         </button>
@@ -190,8 +197,12 @@ const AddNewProductPage = ({ setActiveTab }) => {
             onClick={() => document.getElementById('fileInput').click()}
           >
             <UploadCloud className="addproduct-upload-icon" size={28} />
-            <p className="addproduct-upload-text">Drag & drop images here, or click to select</p>
-            <button type="button" className="addproduct-select-button">Select Images</button>
+            <p className="addproduct-upload-text">
+              Drag & drop images here, or click to select
+            </p>
+            <button type="button" className="addproduct-select-button">
+              Select Images
+            </button>
             <input
               type="file"
               id="fileInput"
@@ -216,7 +227,11 @@ const AddNewProductPage = ({ setActiveTab }) => {
           )}
         </div>
 
-        <button type="submit" className="addproduct-submit-button" disabled={loading}>
+        <button
+          type="submit"
+          className="addproduct-submit-button"
+          disabled={loading}
+        >
           {loading ? 'Submitting...' : 'Create Product'}
         </button>
       </form>
@@ -225,7 +240,10 @@ const AddNewProductPage = ({ setActiveTab }) => {
 
       <div className="select-cotogories-container">
         <div className="select-cotogories-header">
-          <FolderKanban className="select-cotogories-header-icon-svg" size={24} />
+          <FolderKanban
+            className="select-cotogories-header-icon-svg"
+            size={24}
+          />
           <h1>Categories</h1>
         </div>
 
@@ -239,7 +257,12 @@ const AddNewProductPage = ({ setActiveTab }) => {
                 onChange={() => handleCheckboxChange(category.id)}
               />
               <div className="select-cotogories-info">
-                <label htmlFor={category.id} className="select-cotogories-name">{category.name}</label>
+                <label
+                  htmlFor={category.id}
+                  className="select-cotogories-name"
+                >
+                  {category.name}
+                </label>
                 {category.type === 'subcategory' && (
                   <span className="select-cotogories-type">Subcategory</span>
                 )}
