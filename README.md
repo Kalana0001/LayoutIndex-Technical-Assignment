@@ -8,14 +8,6 @@ It allows administrators to **manage product categories** (with multi-level nest
 
 ## 📁 Project Structure
 
-```
-
-/admin-panel     # Frontend (React.js)
-/backend         # Backend (Node.js + Express)
-/ecommerce.sql   # MySQL DB schema and sample data
-
-````
-
 ---
 
 ## 🚀 Tech Stack
