@@ -2,10 +2,7 @@ import React from "react";
 import {
   LayoutDashboard,
   Boxes,
-  DollarSign,
   Tag,
-  Users,
-  Settings,
   User
 } from "lucide-react";
 import "./AdminSidebar.css";
@@ -45,24 +42,6 @@ const AdminSidebar = ({ activeTab, setActiveTab }) => (
         label="Products"
         active={activeTab === "Products"}
         onClick={() => setActiveTab("Products")}
-      />
-      <NavItem
-        icon={<DollarSign />}
-        label="Analytics"
-        active={activeTab === "Analytics"}
-        onClick={() => setActiveTab("Analytics")}
-      />
-      <NavItem
-        icon={<Users />}
-        label="Customers"
-        active={activeTab === "Customers"}
-        onClick={() => setActiveTab("Customers")}
-      />
-      <NavItem
-        icon={<Settings />}
-        label="Settings"
-        active={activeTab === "Settings"}
-        onClick={() => setActiveTab("Settings")}
       />
     </nav>
   </aside>

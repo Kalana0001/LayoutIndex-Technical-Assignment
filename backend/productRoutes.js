@@ -107,6 +107,45 @@ router.get('/products/count', (req, res) => {
   });
 });
 
+router.get('/products/lowcount', (req, res) => {
+  const totalCountSql = 'SELECT COUNT(*) AS totalCount FROM products';
+  const lowQtyCountSql = 'SELECT COUNT(*) AS lowQtyCount FROM products WHERE quantity <= 5';
+
+  db.query(totalCountSql, (err, totalResults) => {
+    if (err) {
+      console.error('Error fetching total product count:', err);
+      return res.status(500).json({ error: 'Failed to fetch total product count' });
+    }
+
+    db.query(lowQtyCountSql, (err, lowQtyResults) => {
+      if (err) {
+        console.error('Error fetching low quantity product count:', err);
+        return res.status(500).json({ error: 'Failed to fetch low quantity product count' });
+      }
+
+      res.json({
+        totalCount: totalResults[0].totalCount,
+        lowQuantityCount: lowQtyResults[0].lowQtyCount,
+      });
+    });
+  });
+});
+
+// API: Get Price Count
+router.get('/products/totalprice', (req, res) => {
+  const sql = 'SELECT SUM(price) AS totalPrice FROM products';
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('Error fetching total product price:', err);
+      return res.status(500).json({ error: 'Failed to fetch total product price' });
+    }
+    const totalPrice = results[0].totalPrice || 0;
+    res.json({ totalPrice });
+  });
+});
+
+
 // API: Get Single Product by ID
 router.get('/product/:id', (req, res) => {
   const productId = req.params.id;

@@ -61,7 +61,6 @@ const ProductPage = ({ setActiveTab, setProductToEdit }) => {
     try {
       await axios.delete(`http://localhost:8180/api/product/${productId}`);
       toast.success(`Deleted product "${productName}"`);
-      // Remove deleted product from state to update UI
       setProducts(prev => prev.filter(p => p.id !== productId));
     } catch (err) {
       toast.error('Failed to delete product.');

@@ -3,8 +3,9 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import './AdminLogin.css'
 import { Eye, EyeOff, LogIn } from 'lucide-react'
-import { toast ,ToastContainer} from "react-toastify"
+import { toast, ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
+import validateAdminLogin from '../../components/Validation/adminLoginValidation' 
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('')
@@ -14,6 +15,13 @@ const AdminLogin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+
+    const errors = validateAdminLogin(email, password) 
+    if (Object.keys(errors).length > 0) {
+      Object.values(errors).forEach(msg => toast.error(msg))
+      return
+    }
+
     try {
       const res = await axios.post('http://localhost:8180/api/login', { email, password })
       toast.success(res.data.message)
@@ -29,7 +37,7 @@ const AdminLogin = () => {
 
   return (
     <div className="admin-signin-container">
-      <ToastContainer position="top-center" autoClose={1000}  />
+      <ToastContainer position="top-center" autoClose={1000} />
       <div className="admin-header">
         <div className="admin-logo">
           <LogIn size={24} />

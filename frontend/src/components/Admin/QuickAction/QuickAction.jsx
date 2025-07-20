@@ -1,31 +1,10 @@
+// src/components/AdminPanel/AdminPanelCard.jsx
 import React, { useEffect, useState } from "react";
 import { Boxes, Tag, DollarSign, AlertTriangle } from "lucide-react";
 import axios from "axios";
+import StatCard from "./StatCard";
+import QuickAction from "./QuickAction";
 
-const StatCard = ({ icon, label, value, change, red }) => (
-  <div className="stat-card">
-    <div>
-      <h3 className="stat-label">{label}</h3>
-      <p className="stat-value">{value}</p>
-      <p className={`stat-change ${red ? "red" : "green"}`}>{change}</p>
-    </div>
-    <div className="stat-icon">{icon}</div>
-  </div>
-);
-
-const QuickAction = ({ icon, label, desc, color, onClick }) => (
-  <div
-    className={`quick-action ${color}`}
-    onClick={onClick}
-    style={{ cursor: "pointer" }}
-  >
-    <div className="quick-action-icon">{icon}</div>
-    <div>
-      <h4 className="quick-action-label">{label}</h4>
-      <p className="quick-action-desc">{desc}</p>
-    </div>
-  </div>
-);
 const AdminPanelCard = ({ setActiveTab }) => {
   const [categoryCount, setCategoryCount] = useState(0);
   const [productCount, setProductCount] = useState(0);
