@@ -46,7 +46,6 @@ DB_HOST=localhost
 DB_USER=root
 DB_PASSWORD=yourpassword
 DB_NAME=ecommerce
-PORT=5000
 ```
 
 ### 3. Import MySQL schema
